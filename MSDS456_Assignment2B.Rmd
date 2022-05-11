@@ -1,0 +1,90 @@
+---
+title: "MSDS456_Assignment2B"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r}
+library(readxl)
+library(tidyverse)
+library(caTools)
+NBA_2020_2021 <- read_excel("NBA_2020-2021.xlsx", 
+                            skip = 1)
+View(NBA_2020_2021)
+NBA_2020_2021 <- NBA_2020_2021[-c(31),]
+Four_Factors_2020_2021 <- NBA_2020_2021 %>% select(Team, W, `eFG%...19`, `TOV%...20`, 
+                                                   `ORB%`,`FT/FGA...22`, `eFG%...24`,
+                                                   `TOV%...25`, `DRB%`, `FT/FGA...27`)
+Four_Factors_2020_2021$`TOV%...20`<- Four_Factors_2020_2021$`TOV%...20`/100
+Four_Factors_2020_2021$`TOV%...25`<- Four_Factors_2020_2021$`TOV%...25`/100
+Four_Factors_2020_2021$`ORB%`<- Four_Factors_2020_2021$`ORB%`/100
+Four_Factors_2020_2021$`DRB%`<- Four_Factors_2020_2021$`DRB%`/100
+
+Four_Factors_2020_2021$`OeFG%_Rank`<-rank(-Four_Factors_2020_2021$`eFG%...19`)
+Four_Factors_2020_2021$`OTOV%_Rank`<-rank(Four_Factors_2020_2021$`TOV%...20`)
+Four_Factors_2020_2021$`ORB%_Rank`<-rank(-Four_Factors_2020_2021$`ORB%`)
+Four_Factors_2020_2021$`OFT/FGA_Rank`<-rank(-Four_Factors_2020_2021$`FT/FGA...22`)
+Four_Factors_2020_2021$`DeFG%_Rank`<-rank(Four_Factors_2020_2021$`eFG%...24`)
+Four_Factors_2020_2021$`DTOV%_Rank`<-rank(-Four_Factors_2020_2021$`TOV%...25`)
+Four_Factors_2020_2021$`DRB%_Rank`<-rank(-Four_Factors_2020_2021$`DRB%`)
+Four_Factors_2020_2021$`DFT/FGA_Rank`<-rank(Four_Factors_2020_2021$`FT/FGA...27`)
+View(Four_Factors_2020_2021)
+
+Four_Factors_2020_2021_Rank <- Four_Factors_2020_2021 %>% select(Team, W, `OeFG%_Rank`, `OTOV%_Rank`, 
+                                                   `ORB%_Rank`,`OFT/FGA_Rank`, `DeFG%_Rank`,
+                                                   `DTOV%_Rank`, `DRB%_Rank`, `DFT/FGA_Rank`)
+
+View(Four_Factors_2020_2021_Rank)
+write_csv(Four_Factors_2020_2021_Rank, file = "Four_Factors_2020_2021_Rank.csv")
+
+NBA_2021_2022 <- read_excel("NBA_2021-2022.xlsx", 
+                            skip = 1)
+View(NBA_2021_2022)
+NBA_2021_2022 <- NBA_2021_2022[-c(31),]
+Four_Factors_2021_2022 <- NBA_2021_2022 %>% select(Team, W, `eFG%...19`, `TOV%...20`, 
+                                                   `ORB%`,`FT/FGA...22`, `eFG%...24`,
+                                                   `TOV%...25`, `DRB%`, `FT/FGA...27`)
+Four_Factors_2021_2022$`TOV%...20`<- Four_Factors_2021_2022$`TOV%...20`/100
+Four_Factors_2021_2022$`TOV%...25`<- Four_Factors_2021_2022$`TOV%...25`/100
+Four_Factors_2021_2022$`ORB%`<- Four_Factors_2021_2022$`ORB%`/100
+Four_Factors_2021_2022$`DRB%`<- Four_Factors_2021_2022$`DRB%`/100
+
+Four_Factors_2021_2022$`OeFG%_Rank`<-rank(-Four_Factors_2021_2022$`eFG%...19`)
+Four_Factors_2021_2022$`OTOV%_Rank`<-rank(Four_Factors_2021_2022$`TOV%...20`)
+Four_Factors_2021_2022$`ORB%_Rank`<-rank(-Four_Factors_2021_2022$`ORB%`)
+Four_Factors_2021_2022$`OFT/FGA_Rank`<-rank(-Four_Factors_2021_2022$`FT/FGA...22`)
+Four_Factors_2021_2022$`DeFG%_Rank`<-rank(Four_Factors_2021_2022$`eFG%...24`)
+Four_Factors_2021_2022$`DTOV%_Rank`<-rank(-Four_Factors_2021_2022$`TOV%...25`)
+Four_Factors_2021_2022$`DRB%_Rank`<-rank(-Four_Factors_2021_2022$`DRB%`)
+Four_Factors_2021_2022$`DFT/FGA_Rank`<-rank(Four_Factors_2021_2022$`FT/FGA...27`)
+View(Four_Factors_2021_2022)
+
+Four_Factors_2021_2022_Rank <- Four_Factors_2021_2022 %>% select(Team, W, `OeFG%_Rank`, `OTOV%_Rank`, 
+                                                   `ORB%_Rank`,`OFT/FGA_Rank`, `DeFG%_Rank`,
+                                                   `DTOV%_Rank`, `DRB%_Rank`, `DFT/FGA_Rank`)
+View(Four_Factors_2021_2022_Rank)
+write_csv(Four_Factors_2021_2022_Rank, file = "Four_Factors_2021_2022_Rank.csv")
+
+Shooting_Dev <- Four_Factors_2020_2021$`eFG%...19`- Four_Factors_2020_2021$`eFG%...24`
+Turnover_Dev <- Four_Factors_2020_2021$`TOV%...20`- Four_Factors_2020_2021$`TOV%...25`
+Rebound_Dev <- Four_Factors_2020_2021$`ORB%`- Four_Factors_2020_2021$`DRB%`
+Free_Throw_Dev <- Four_Factors_2020_2021$`FT/FGA...22`- Four_Factors_2020_2021$`FT/FGA...27`
+
+model <- lm(Four_Factors_2020_2021$W ~ Shooting_Dev + Turnover_Dev + Rebound_Dev + Free_Throw_Dev)
+summary(model)
+summary(lm(Four_Factors_2020_2021$W ~ Shooting_Dev))
+summary(lm(Four_Factors_2020_2021$W ~ Turnover_Dev))
+summary(lm(Four_Factors_2020_2021$W ~ Rebound_Dev))
+summary(lm(Four_Factors_2020_2021$W ~ Free_Throw_Dev))
+
+Games_won <- 49.84 + 340.88*Shooting_Dev[c(27)] - 231.98*Turnover_Dev[c(27)] + 
+            24.86*Rebound_Dev[c(27)] + 102.63*Free_Throw_Dev[c(27)]
+Games_won
+
+
+```
+
+
